@@ -73,9 +73,35 @@ class GameState extends ChangeNotifier {
       _firstIndex = null;
       _secondIndex = null;
       notifyListeners();
+      _checkWinCondition();
+    }
+  }
+
+  void _checkWinCondition() {
+    if (_cards.every((card) => card.isMatched)) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        showDialog(
+          context: navigatorKey.currentContext!,
+          builder: (context) => AlertDialog(
+            title: Text("Congratulations!"),
+            content: Text("You've matched all pairs!"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _initializeGame();
+                },
+                child: Text("Play Again"),
+              ),
+            ],
+          ),
+        );
+      });
     }
   }
 }
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class GameScreen extends StatelessWidget {
   @override
@@ -120,7 +146,6 @@ class GameScreen extends StatelessWidget {
   }
 }
 
-
 class RotationYTransition extends AnimatedWidget {
   final Widget child;
   final Animation<double> turns;
@@ -138,4 +163,5 @@ class RotationYTransition extends AnimatedWidget {
     );
   }
 }
+
 
