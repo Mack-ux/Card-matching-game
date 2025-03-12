@@ -98,7 +98,7 @@ class GameScreen extends StatelessWidget {
                 child: AnimatedSwitcher(
                   duration: Duration(milliseconds: 500),
                   transitionBuilder: (Widget child, Animation<double> animation) {
-                    return ScaleTransition(scale: animation, child: child);
+                    return RotationYTransition(turns: animation, child: child);
                   },
                   child: gameState.cards[index].isFlipped || gameState.cards[index].isMatched
                       ? Card(
@@ -119,3 +119,22 @@ class GameScreen extends StatelessWidget {
     );
   }
 }
+
+class RotationYTransition extends AnimatedWidget {
+  final Widget child;
+  final Animation<double> turns;
+
+  RotationYTransition({required this.turns, required this.child})
+      : super(listenable: turns);
+
+  @override
+  Widget build(BuildContext context) {
+    final Matrix4 transform = Matrix4.rotationY(turns.value * pi);
+    return Transform(
+      transform: transform,
+      alignment: Alignment.center,
+      child: child,
+    );
+  }
+}
+
